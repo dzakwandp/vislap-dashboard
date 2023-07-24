@@ -58,8 +58,8 @@ export default {
     },
     methods: {
         logOut() {
-            const authStore = useAuthStore()
-            authStore.logout()
+            // const authStore = useAuthStore()
+            // authStore.logout()
             this.$router.push('/login')
         }
     },
