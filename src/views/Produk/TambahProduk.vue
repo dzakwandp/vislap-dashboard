@@ -10,12 +10,6 @@
         <v-btn @click="uploadFile">Submit</v-btn>
       </v-form>
       </v-container>
-      <v-container>
-        <v-form @submit.prevent="uploadImage" enctype="multipart/form-data">
-          <v-file-input v-model="image" accept="image/*"></v-file-input>
-          <v-btn type="submit">Upload</v-btn>
-        </v-form>
-      </v-container>
     </div>
   </template>
   <script>
@@ -52,20 +46,20 @@
             console.log(err)
           })
       },
-      async uploadImage() {
-        console.log(this.image)
-        const file = this.image[0]
-        this.image = file
-        const imageData = new FormData();
-        imageData.append('img', this.image)
-        try {
-          const imagUp = await axios.post(useEnvStore().apiUrl + "products/single", imageData)
-          console.log(imagUp)
-        }
-        catch (err) {
-          console.log(err)
-        }
-      }
+      // async uploadImage() {
+      //   console.log(this.image)
+      //   const file = this.image[0]
+      //   this.image = file
+      //   const imageData = new FormData();
+      //   imageData.append('img', this.image)
+      //   try {
+      //     const imagUp = await axios.post(useEnvStore().apiUrl + "products/single", imageData)
+      //     console.log(imagUp)
+      //   }
+      //   catch (err) {
+      //     console.log(err)
+      //   }
+      // }
     },
   }
   </script>

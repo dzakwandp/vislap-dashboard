@@ -17,19 +17,30 @@
             </v-list>
 
             <v-divider></v-divider>
-            <v-list density="compact" nav>
-                    <v-list-item :prepend-icon="links[0].icon" :title="links[0].title" :to="links[0].route" link>
-                    </v-list-item>
-                    <v-divider></v-divider>
-                    <v-list-item prepend-icon="mdi" subtitle="Penjualan"></v-list-item>
-                    <v-list-item :prepend-icon="links[1].icon" :title="links[1].title" :to="links[1].route" link>
-                    </v-list-item>
-                    <v-list-item v-for="item in penjualan" :prepend-icon="item.icon" :title="item.title" :to="item.route" link>
-                    </v-list-item>
-                    <v-divider></v-divider>
-                    <v-list-item prepend-icon="mdi" subtitle="Service"></v-list-item>
-                    <v-list-item :prepend-icon="links[2].icon" :title="links[2].title" :to="links[2].route" link>
-                    </v-list-item>
+            <v-list v-if="role === 1" density="compact" nav>
+                <v-list-item v-for="item in superlinks" :prepend-icon="item.icon" :title="item.title" :to="item.route"
+                    link>
+                </v-list-item>
+            </v-list>
+            <v-list v-else-if="role === 2" density="compact" nav>
+                <v-list-item :prepend-icon="adminlinks[0].icon" :title="adminlinks[0].title" :to="adminlinks[0].route" link>
+                </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item prepend-icon="mdi" subtitle="Penjualan"></v-list-item>
+                <v-list-item :prepend-icon="adminlinks[1].icon" :title="adminlinks[1].title" :to="adminlinks[1].route" link>
+                </v-list-item>
+                <v-list-item v-for="item in adminpenjualan" :prepend-icon="item.icon" :title="item.title" :to="item.route"
+                    link>
+                </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item prepend-icon="mdi" subtitle="Service"></v-list-item>
+                <v-list-item :prepend-icon="adminlinks[2].icon" :title="adminlinks[2].title" :to="adminlinks[2].route" link>
+                </v-list-item>
+            </v-list>
+            <v-list v-if="role === 3" density="compact" nav>
+                <v-list-item v-for="item in teknislinks" :prepend-icon="item.icon" :title="item.title" :to="item.route"
+                    link>
+                </v-list-item>
             </v-list>
         </v-navigation-drawer>
     </nav>
@@ -44,15 +55,26 @@ export default {
     },
     data() {
         return {
+            role: 2,
             drawer: true,
-            links: [
+            adminlinks: [
                 { icon: "mdi-home", title: "Home", route: "/home" },
                 { icon: "mdi-file-multiple", title: "Penjualan", route: "/penjualan" },
                 { icon: "mdi-tools", title: "Service", route: "/service" }
             ],
-            penjualan: [
-                { icon: "mdi-shape", title: "Kategori", route: "/kategori" },
-                { icon: "mdi-treasure-chest", title: "Produk", route: "/produk" }
+            adminpenjualan: [
+                { icon: "mdi-shape", title: "Kategori", route: "/category" },
+                { icon: "mdi-treasure-chest", title: "Produk", route: "/products" }
+            ],
+            superlinks: [
+                { icon: "mdi-home", title: "Home", route: "/admin_acc" },
+                { icon: "mdi-home", title: "Admin Account", route: "/admin_acc" },
+                { icon: "mdi-file-multiple", title: "Laporan", route: "/laporan" },
+            ],
+            teknislinks:[
+            { icon: "mdi-home", title: "Home", route: "/admin_acc" },
+            { icon: "mdi-home", title: "Kelola Service", route: "/admin_acc" },
+            { icon: "mdi-home", title: "History Service", route: "/admin_acc" },
             ]
         }
     },
