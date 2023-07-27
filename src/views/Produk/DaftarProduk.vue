@@ -2,7 +2,7 @@
     <div>
         <v-container>
             <div class="text-right mb-4">
-                <v-btn color="blue-darken-2" prepend-icon="mdi-plus" @click="this.$router.push('/addproduct')">Tambah</v-btn>
+                <v-btn color="blue-darken-3" prepend-icon="mdi-plus" @click="this.$router.push('/addproduct')">Tambah</v-btn>
             </div>
             <EasyDataTable :headers="dataHeader" :items="product" theme-color="#1565C0" :loading="loading">
                 <template #item-opsi="item" v-slot:item.actions="{item}">

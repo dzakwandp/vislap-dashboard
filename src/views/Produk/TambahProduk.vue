@@ -1,68 +1,74 @@
 <template lang="">
     <div>
       <v-container class="w-50">
-        <v-form @submit.prevent="uploadFile" enctype="multipart/form-data">
-        <v-text-field label="Nama" v-model="nama"></v-text-field>
-        <v-text-field label="Harga" type="number" v-model.number="harga"></v-text-field>
-        <v-file-input label="Photo" v-model="photo" accpet="image/*"></v-file-input>
-        <v-text-field label="Kategori" v-model="kategori"></v-text-field>
-        <v-text-field label="Stock" type="number" v-model.number="stock"></v-text-field>
-        <v-btn @click="uploadFile">Submit</v-btn>
-      </v-form>
+        <div>
+            <v-btn class="mb-4 text-body-2" variant="text" prepend-icon="mdi-arrow-left" color="grey-darken-1" @click="this.$router.push('/products')">Kembali</v-btn>
+        </div>
+        <v-card class="pa-8">
+          <v-card-title class="ml-n4 mb-4">Tambah Produk</v-card-title>
+          <v-form @submit.prevent="uploadFile" enctype="multipart/form-data">
+          <v-text-field label="Nama" v-model="nama" variant="outlined" density="compact"></v-text-field>
+          <v-text-field label="Harga" type="number" v-model.number="harga" variant="outlined" density="compact"></v-text-field>
+          <v-file-input label="Photo" v-model="photo" accpet="image/*" variant="outlined" density="compact"></v-file-input>
+          <v-text-field label="Kategori" v-model="kategori" variant="outlined" density="compact"></v-text-field>
+          <v-text-field label="Stock" type="number" v-model.number="stock" variant="outlined" density="compact"></v-text-field>
+          <v-btn class="mt-4 text-body-2" color="blue-darken-2" location="center" @click="uploadFile">Submit</v-btn>
+        </v-form>
+        </v-card>
       </v-container>
     </div>
   </template>
-  <script>
-  import { useEnvStore } from '@/store/envStore';
-  
-  import axios from "axios"
-  export default {
-    data() {
-      return {
-        nama: null,
-        harga: 0,
-        photo: null,
-        kategori: null,
-        stock: 0,
-        image: null
-      }
+<script>
+import { useEnvStore } from '@/store/envStore';
+
+import axios from "axios"
+export default {
+  data() {
+    return {
+      nama: null,
+      harga: 0,
+      photo: null,
+      kategori: null,
+      stock: 0,
+      image: null
+    }
+  },
+  methods: {
+    uploadFile() {
+      this.photo = this.photo[0]
+      let newData = new FormData()
+      newData.append('nama', this.nama)
+      newData.append('harga', this.harga)
+      newData.append('img', this.photo)
+      newData.append('kategori', this.kategori)
+      newData.append('stock', this.stock)
+      newData.append('_method', "POST")
+      axios
+        .post(useEnvStore().apiUrl + "products/", newData)
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
-    methods: {
-      uploadFile() {
-        this.photo = this.photo[0]
-        let newData = new FormData()
-        newData.append('nama', this.nama)
-        newData.append('harga', this.harga)
-        newData.append('img', this.photo)
-        newData.append('kategori', this.kategori)
-        newData.append('stock', this.stock)
-        newData.append('_method', "POST")
-        axios
-          .post(useEnvStore().apiUrl + "products/", newData)
-          .then((res) => {
-            console.log(res)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-      },
-      // async uploadImage() {
-      //   console.log(this.image)
-      //   const file = this.image[0]
-      //   this.image = file
-      //   const imageData = new FormData();
-      //   imageData.append('img', this.image)
-      //   try {
-      //     const imagUp = await axios.post(useEnvStore().apiUrl + "products/single", imageData)
-      //     console.log(imagUp)
-      //   }
-      //   catch (err) {
-      //     console.log(err)
-      //   }
-      // }
-    },
-  }
-  </script>
-  <style lang="">
+    // async uploadImage() {
+    //   console.log(this.image)
+    //   const file = this.image[0]
+    //   this.image = file
+    //   const imageData = new FormData();
+    //   imageData.append('img', this.image)
+    //   try {
+    //     const imagUp = await axios.post(useEnvStore().apiUrl + "products/single", imageData)
+    //     console.log(imagUp)
+    //   }
+    //   catch (err) {
+    //     console.log(err)
+    //   }
+    // }
+  },
+}
+</script>
+<style lang="">
     
   </style>
