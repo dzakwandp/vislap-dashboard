@@ -59,7 +59,7 @@ export default {
             drawer: true,
             adminlinks: [
                 { icon: "mdi-home", title: "Home", route: "/home" },
-                { icon: "mdi-file-multiple", title: "Penjualan", route: "/penjualan" },
+                { icon: "mdi-file-multiple", title: "Transaksi", route: "/txs" },
                 { icon: "mdi-tools", title: "Service", route: "/service" }
             ],
             adminpenjualan: [

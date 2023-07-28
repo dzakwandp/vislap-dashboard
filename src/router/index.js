@@ -7,6 +7,8 @@ import LoginPage from '@/layouts/LoginPage.vue'
 import Home from '@/views/Home.vue'
 import Produk from '@/views/Produk/DaftarProduk.vue'
 import Kategori from '@/views/Kategori/DaftarKategori.vue'
+import DaftarTransaksi from '@/views/Transaksi/DaftarTransaksi.vue'
+import DetailTransaksi from '@/views/Transaksi/DetailTransaksi.vue'
 import DetailProduk from '@/views/Produk/DetailProduk.vue'
 import TambahProduk from '@/views/Produk/TambahProduk.vue'
 const routes = [
@@ -30,6 +32,16 @@ const routes = [
         path: 'category',
         name: 'category',
         component: Kategori
+      },
+      {
+        path: 'txs',
+        name: 'transaction',
+        component: DaftarTransaksi
+      },
+      {
+        path: 'txs/:id',
+        name: 'tx',
+        component: DetailTransaksi
       },
       {
         path: 'products',
