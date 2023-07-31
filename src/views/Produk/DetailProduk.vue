@@ -18,6 +18,12 @@
                 <div class="d-flex flex-row mb-4 align-center">
                     <img class="w-25" :src="url+'images/'+image" alt="">
                     <v-file-input class="h-4" v-model="selectedImg" label="Image" variant="outlined" accept="image/png, image/jpeg" :disabled="!editable" density="compact"></v-file-input>
+                    <v-btn v-if="editable" class="mb-6 ml-4" icon variant="text" color="red">
+                        <v-icon>
+                            mdi-alert-circle-outline
+                        </v-icon>
+                    <v-tooltip activator="parent" location="bottom">Gambar harus dalam format JPG/PNG</v-tooltip>
+                </v-btn>
                 </div>
                 <!-- for activate edit -->
                 <div v-if="!editable" class="text-center">
@@ -65,7 +71,7 @@ export default {
                 this.kategori = prod.data.kategori
                 this.stock = prod.data.stock
                 this.image = prod.data.photo
-                this.loading=false
+                this.loading = false
             }
             catch (err) {
                 console.log(err)
@@ -84,22 +90,22 @@ export default {
                 .put(useEnvStore().apiUrl + "products/" + this.$route.params.id, upData)
                 .then((res) => {
                     console.log(res)
-                    this.editable=false
+                    this.editable = false
                     this.getProduct()
                 })
                 .catch((err) => {
                     console.log(err)
                 })
         },
-        deleteProduct(){
-            axios.delete(useEnvStore().apiUrl+"products/"+this.$route.params.id)
-            .then((res)=>{
-                console.log(res)
-                this.$router.push('/products')
-            })
-            .catch((err)=>{
-                console.log(err)
-            })
+        deleteProduct() {
+            axios.delete(useEnvStore().apiUrl + "products/" + this.$route.params.id)
+                .then((res) => {
+                    console.log(res)
+                    this.$router.push('/products')
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         }
     },
     mounted() {

@@ -100,7 +100,6 @@ export default {
                 const txs = await axios.get(useEnvStore().apiUrl + 'txs/' + this.$route.params.id)
                 console.log(txs)
                 this.txsData = txs.data
-                console.log(this.txsData.status_id)
             }
             catch (err) {
                 console.log(err)
@@ -110,7 +109,7 @@ export default {
             const updatedStatus=this.txsData.status_id+1
             axios.put(useEnvStore().apiUrl+'txs/'+this.$route.params.id,
             {
-                status:updatedStatus
+                status_id:updatedStatus
             })
             .then((res)=>{
                 console.log(res)

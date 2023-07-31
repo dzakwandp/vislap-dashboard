@@ -1,7 +1,7 @@
 <template lang="">
     <div>
         <v-container>
-            <EasyDataTable :headers="tableHeader" :items="txData">
+            <EasyDataTable :loading="loading" :headers="tableHeader" :items="txData" theme-color="#1565C0">
                 <template #item-details="item" v-slot:item.actions="{item}">
                     <v-btn icon="mdi-eye" color="blue-darken-3" variant="text" @click="toTxDetail(item.id)"></v-btn>
                 </template>
@@ -19,9 +19,11 @@ export default {
     },
     data() {
         return {
+            loading: true,
             tableHeader:[
                 {text:'id', value:'id'},
                 {text:'Tanggal', value:'date'},
+                {text:'Total Invoice', value:'final_price'},
                 {text:'Status', value:'status.status'},
                 {text:'', value:'details'}
             ],
@@ -34,6 +36,7 @@ export default {
                 const txs = await axios.get(useEnvStore().apiUrl + 'txs')
                 console.log(txs)
                 this.txData=txs.data
+                this.loading=false
             }
 
             catch (err) {
