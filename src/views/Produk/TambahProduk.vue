@@ -58,6 +58,7 @@ export default {
         .post(useEnvStore().apiUrl + "products/", newData)
         .then((res) => {
           console.log(res)
+          this.$router.push('/products')
         })
         .catch((err) => {
           console.log(err)
