@@ -10,7 +10,7 @@
           <v-text-field label="Nama" v-model="nama" variant="outlined" density="compact"></v-text-field>
           <v-text-field label="Harga" type="number" v-model.number="harga" variant="outlined" density="compact"></v-text-field>
           <v-file-input label="Photo" v-model="photo" accpet="image/*" variant="outlined" density="compact"></v-file-input>
-          <v-text-field label="Kategori" v-model="kategori" variant="outlined" density="compact"></v-text-field>
+          <v-select :items="catItems" label="Kategori" variant="outlined" item-title="name" v-model="kategori" density="compact"></v-select>
           <v-text-field label="Stock" type="number" v-model.number="stock" variant="outlined" density="compact"></v-text-field>
           <v-btn class="mt-4 text-body-2" color="blue-darken-2" location="center" @click="uploadFile">Submit</v-btn>
         </v-form>
@@ -30,10 +30,21 @@ export default {
       photo: null,
       kategori: null,
       stock: 0,
+      catItems: [],
       image: null
     }
   },
   methods: {
+    async getCategory() {
+      try {
+        const cat = await axios.get(useEnvStore().apiUrl + 'category')
+        this.catItems = cat.data
+        console.log(this.catItems)
+      }
+      catch(err){
+        console.log(err)
+      }
+    },
     uploadFile() {
       this.photo = this.photo[0]
       let newData = new FormData()
@@ -52,20 +63,9 @@ export default {
           console.log(err)
         })
     },
-    // async uploadImage() {
-    //   console.log(this.image)
-    //   const file = this.image[0]
-    //   this.image = file
-    //   const imageData = new FormData();
-    //   imageData.append('img', this.image)
-    //   try {
-    //     const imagUp = await axios.post(useEnvStore().apiUrl + "products/single", imageData)
-    //     console.log(imagUp)
-    //   }
-    //   catch (err) {
-    //     console.log(err)
-    //   }
-    // }
+  },
+  mounted() {
+    this.getCategory()
   },
 }
 </script>
