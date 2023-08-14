@@ -12,8 +12,7 @@
         </v-app-bar>
         <v-navigation-drawer expand-on-hover rail color="grey-darken-3" class="text-indigo-lighten-4">
             <v-list>
-                <v-list-item :prepend-avatar="userData.setPicture" :title="userData.setName"
-                    :subtitle="userData.setEmail"></v-list-item>
+                <v-list-item prepend-icon="mdi-account-circle" :title="userData.getUsername"></v-list-item>
             </v-list>
 
             <v-divider></v-divider>
@@ -36,6 +35,8 @@
                 <v-list-item prepend-icon="mdi" subtitle="Service"></v-list-item>
                 <v-list-item :prepend-icon="adminlinks[2].icon" :title="adminlinks[2].title" :to="adminlinks[2].route" link>
                 </v-list-item>
+                <v-list-item :prepend-icon="adminlinks[3].icon" :title="adminlinks[3].title" :to="adminlinks[3].route" link>
+                </v-list-item>
             </v-list>
             <v-list v-if="role === 3" density="compact" nav>
                 <v-list-item v-for="item in teknislinks" :prepend-icon="item.icon" :title="item.title" :to="item.route"
@@ -55,33 +56,34 @@ export default {
     },
     data() {
         return {
-            role: 2,
+            role: useAuthStore().getRole,
             drawer: true,
             adminlinks: [
                 { icon: "mdi-home", title: "Home", route: "/home" },
                 { icon: "mdi-file-multiple", title: "Transaksi", route: "/txs" },
-                { icon: "mdi-tools", title: "Service", route: "/service" }
+                { icon: "mdi-tools", title: "Service", route: "/service_admin" },
+                { icon: "mdi-account-group", title: "Teknisi Account", route: "/admin_list" }
             ],
             adminpenjualan: [
                 { icon: "mdi-shape", title: "Kategori", route: "/category" },
                 { icon: "mdi-treasure-chest", title: "Produk", route: "/products" }
             ],
             superlinks: [
-                { icon: "mdi-home", title: "Home", route: "/admin_acc" },
-                { icon: "mdi-home", title: "Admin Account", route: "/admin_acc" },
+                { icon: "mdi-home", title: "Home", route: "/home" },
+                { icon: "mdi-account-group", title: "Admin Account", route: "/admin_list" },
                 { icon: "mdi-file-multiple", title: "Laporan", route: "/laporan" },
             ],
             teknislinks:[
-            { icon: "mdi-home", title: "Home", route: "/admin_acc" },
-            { icon: "mdi-home", title: "Kelola Service", route: "/admin_acc" },
-            { icon: "mdi-home", title: "History Service", route: "/admin_acc" },
+            { icon: "mdi-home", title: "Home", route: "/home" },
+            { icon: "mdi-tools", title: "Kelola Service", route: "/service_tech" },
+            // { icon: "mdi-home", title: "History Service", route: "/service_history" },
             ]
         }
     },
     methods: {
         logOut() {
-            // const authStore = useAuthStore()
-            // authStore.logout()
+            const authStore = useAuthStore()
+            authStore.logout()
             this.$router.push('/login')
         }
     },

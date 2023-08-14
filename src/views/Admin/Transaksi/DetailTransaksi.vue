@@ -1,5 +1,9 @@
 <template lang="">
-    <div>
+    <div class="h-screen mx-auto text-center" v-if="loading">
+        <v-progress-circular class="mt-16" :size="128" :width="12" color="blue-darken-3"
+            indeterminate></v-progress-circular>
+    </div>
+    <div v-else>
         <v-container class="w-75">
             <v-card class="px-4">
                 <v-card-title class="text-center">Detail Transaksi</v-card-title>
@@ -68,7 +72,7 @@
                     </v-timeline>
                 <div>
                     <v-btn v-if="txsData.status_id===4" class="mt-4" location="center" color="blue-darken-3" disabled>Transaksi Selesai</v-btn>
-                    <v-btn v-else class="mt-4" location="center" color="blue-darken-3" @click="updateTrans()">
+                    <v-btn v-else class="mt-4" location="center" color="blue-darken-3" @click="updateTrans(), loadingButton=true" :loading="loadingButton">
                         {{getButtonText(txsData.status_id)}}
                     </v-btn>
                 </div>
@@ -82,9 +86,12 @@
 import axios from 'axios'
 
 import { useEnvStore } from '@/store/envStore'
+import { useAuthStore } from '@/store/authStore'
 export default {
     data() {
         return {
+            loading:true,
+            loadingButton:false,
             txsData: [],
             transStatus: [
                 { id: 1, status: 'Menunggu Pembayaran' },
@@ -100,6 +107,7 @@ export default {
                 const txs = await axios.get(useEnvStore().apiUrl + 'txs/' + this.$route.params.id)
                 console.log(txs)
                 this.txsData = txs.data
+                this.loading=false
             }
             catch (err) {
                 console.log(err)
@@ -110,9 +118,15 @@ export default {
             axios.put(useEnvStore().apiUrl+'txs/'+this.$route.params.id,
             {
                 status_id:updatedStatus
+            },
+            {
+                headers:{
+                    Authorization: 'Bearer '+useAuthStore().accessToken
+                }
             })
             .then((res)=>{
                 console.log(res)
+                this.loadingButton=false
                 this.loadTxs()
             })
             .catch((err)=>{

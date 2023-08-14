@@ -17,9 +17,9 @@ import axios from 'axios';
 
 import { useEnvStore } from '@/store/envStore'
 export default {
-    components: { 
+    components: {
         EasyDataTable: window['vue3-easy-data-table']
-     },
+    },
     data() {
         return {
             loading: true,
@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         toProdDetail(id) {
-            this.$router.push('/product/'+id)
+            this.$router.push('/product/' + id)
         },
         async getProduct() {
             try {
