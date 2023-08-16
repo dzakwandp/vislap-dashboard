@@ -34,5 +34,7 @@ export const useAuthStore = defineStore('auth', {
           return this.role
         }
     },
-    persist: true
+    persist: {
+        storage: sessionStorage
+    }
 })

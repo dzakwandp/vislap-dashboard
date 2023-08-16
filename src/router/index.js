@@ -1,4 +1,6 @@
 // Composables
+import { useAuthStore } from '@/store/authStore'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Dashboard from '@/layouts/Dashboard.vue'
@@ -94,5 +96,11 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 })
-
+router.beforeEach((to, from, next)=>{
+  const authStore=useAuthStore()
+  const isAuth=authStore.isLoggedIn
+  if (to.name !== 'login' && !isAuth) next ({name:"login"})
+  if (to.name == 'login' && isAuth) next({name:"home"})
+  else next()
+})
 export default router
