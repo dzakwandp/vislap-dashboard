@@ -5,6 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Dashboard from '@/layouts/Dashboard.vue'
 import LoginPage from '@/layouts/LoginPage.vue'
+import NotFound from '@/views/NotFound.vue'
 
 import Home from '@/views/Admin/Home.vue'
 import Produk from '@/views/Admin/Produk/DaftarProduk.vue'
@@ -24,6 +25,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginPage
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'notfound',
+    component: NotFound
   },
   {
     path: '/',

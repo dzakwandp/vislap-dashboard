@@ -47,6 +47,9 @@ export default {
             catch (err) {
                 console.log(err)
                 this.loading = false
+                if(err.response.status===401){
+                    this.$router.push({name: 'notfound'})
+                }
             }
         }
     },

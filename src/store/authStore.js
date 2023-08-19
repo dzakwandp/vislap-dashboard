@@ -13,12 +13,12 @@ export const useAuthStore = defineStore('auth', {
         },
         login(response) {
             this.isLoggedIn = true,
-            this.role=response.role
-                this.name = response.name
+                this.role = response.role
+            this.name = response.name
         },
         logout() {
             this.isLoggedIn = false,
-            this.role=null,
+                this.role = null,
                 this.name = null,
                 this.accessToken = null
         }
@@ -30,8 +30,8 @@ export const useAuthStore = defineStore('auth', {
         getUsername() {
             return this.name
         },
-        getRole(){
-          return this.role
+        getRole() {
+            return this.role
         }
     },
     persist: {
