@@ -5,6 +5,9 @@
                 <template #item-date="item">
                     {{formattedDate(item.date)}}
                 </template>
+                <template #item-final_price="item">
+                    {{formatCurrency(item.final_price)}}
+                </template>
                 <template #item-details="item" v-slot:item.actions="{item}">
                     <v-btn icon="mdi-eye" color="blue-darken-3" variant="text" @click="toTxDetail(item.id)"></v-btn>
                 </template>
@@ -16,6 +19,7 @@
 import axios from 'axios';
 
 import { useEnvStore } from '@/store/envStore'
+import { useAuthStore } from '@/store/authStore';
 import moment from 'moment/min/moment-with-locales';
 export default {
     components: {
@@ -37,7 +41,11 @@ export default {
     methods: {
         async getTxsData() {
             try {
-                const txs = await axios.get(useEnvStore().apiUrl + 'txs')
+                const txs = await axios.get(useEnvStore().apiUrl + 'txs', {
+                    headers: {
+                        Authorization: 'Bearer ' + useAuthStore().accessToken
+                    }
+                })
                 console.log(txs)
                 this.txData = txs.data
                 this.loading = false
@@ -45,8 +53,8 @@ export default {
 
             catch (err) {
                 console.log(err)
-                if(err.response.status===401){
-                    this.$router.push({name: 'notfound'})
+                if (err.response.status === 401) {
+                    this.$router.push({ name: 'notfound' })
                 }
             }
         },
@@ -56,6 +64,13 @@ export default {
         formattedDate(value) {
             moment.locale('id')
             return moment(value).format('D MMMM YYYY [Jam] HH:mm:s')
+        },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumSignificantDigits: 3
+            }).format(value);
         },
     },
     mounted() {

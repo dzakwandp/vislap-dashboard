@@ -5,6 +5,7 @@
     </div>
     <div v-else>
         <v-container class="w-75">
+            <v-btn color="blue-darken-3" prepend-icon="mdi-arrow-left" variant="text" @click="this.$router.push('/txs')">Back</v-btn>
             <v-card class="px-4">
                 <v-card-title class="text-center">Detail Transaksi</v-card-title>
                 <v-card-text>
@@ -70,13 +71,16 @@
                             {{list.status}}
                         </v-timeline-item>
                     </v-timeline>
-                <div>
+                <div class="text-center">
                     <v-btn v-if="txsData.status_id===4" class="mt-4" location="center" color="blue-darken-3" disabled>Transaksi Selesai</v-btn>
-                    <v-btn v-else class="mt-4" location="center" color="blue-darken-3" @click="updateTrans(), loadingButton=true" :loading="loadingButton">
+                    <v-btn v-if="txsData.status_id===5" class="mt-4" color="red-darken-3" disabled>Transaksi Dibatalkan</v-btn>
+                    <v-btn v-else class="mt-4" color="blue-darken-3" @click="updateTrans(), loadingButton=true" :loading="loadingButton">
                         {{getButtonText(txsData.status_id)}}
                     </v-btn>
                 </div>
-                    
+                <div class="text-center">
+                    <v-btn v-if="txsData.status_id===1" class="mt-4" color="red" @click="cancelTrans()">Batalkan Transaksi</v-btn>
+                </div>
                 </v-card-text>
             </v-card>
         </v-container>
@@ -90,10 +94,12 @@ import { useAuthStore } from '@/store/authStore'
 export default {
     data() {
         return {
-            loading:true,
-            loadingButton:false,
+            loading: true,
+            loadingButton: false,
+            txStatusId: null,
             txsData: [],
             transStatus: [
+                { id: 5, status: 'Dibatalkan' },
                 { id: 1, status: 'Menunggu Pembayaran' },
                 { id: 2, status: 'Pembayaran Diterima' },
                 { id: 3, status: 'Barang Dikirim' },
@@ -104,48 +110,76 @@ export default {
     methods: {
         async loadTxs() {
             try {
-                const txs = await axios.get(useEnvStore().apiUrl + 'txs/' + this.$route.params.id)
+                const txs = await axios.get(useEnvStore().apiUrl + 'txs/' + this.$route.params.id, {
+                    headers: {
+                        Authorization: 'Bearer ' + useAuthStore().accessToken
+                    }
+                })
                 console.log(txs)
                 this.txsData = txs.data
-                this.loading=false
+                this.loading = false
             }
             catch (err) {
                 console.log(err)
-                if(err.response.status===401){
-                    this.$router.push({name: 'notfound'})
+                if (err.response.status === 401) {
+                    this.$router.push({ name: 'notfound' })
                 }
             }
         },
-        updateTrans(){
-            const updatedStatus=this.txsData.status_id+1
-            axios.put(useEnvStore().apiUrl+'txs/'+this.$route.params.id,
-            {
-                status_id:updatedStatus
-            },
-            {
-                headers:{
-                    Authorization: 'Bearer '+useAuthStore().accessToken
-                }
-            })
-            .then((res)=>{
-                console.log(res)
-                this.loadingButton=false
-                this.loadTxs()
-            })
-            .catch((err)=>{
-                console.log(err)
-            })
+        updateTrans() {
+            const updatedStatus = this.txsData.status_id + 1
+            axios.put(useEnvStore().apiUrl + 'txs/' + this.$route.params.id,
+                {
+                    status_id: updatedStatus
+                },
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + useAuthStore().accessToken
+                    }
+                })
+                .then((res) => {
+                    console.log(res)
+                    this.loadingButton = false
+                    this.loadTxs()
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
+        cancelTrans() {
+            axios.put(useEnvStore().apiUrl + 'txs/' + this.$route.params.id,
+                {
+                    status_id: 5
+                },
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + useAuthStore().accessToken
+                    }
+                })
+                .then((res) => {
+                    console.log(res)
+                    this.loadingButton = false
+                    this.loadTxs()
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         },
         getStatusColor(listId) {
-            if(listId === this.txsData.status_id){
-                return "green"
+            if (listId === this.txsData.status_id) {
+                if (this.txsData.status_id === 5) {
+                    return "red"
+                }
+                else {
+                    return "green"
+                }
             }
-            else{
+            else {
                 return "grey"
             }
         },
-        getButtonText(listId){
-            switch(listId){
+        getButtonText(listId) {
+            switch (listId) {
                 case 1:
                     return 'Konfirmasi Pembayaran';
                 case 2:
