@@ -5,6 +5,7 @@
     </div>
     <div v-else>
         <v-container class="w-75">
+            <v-btn color="blue-darken-3" variant="text" prepend-icon="mdi-arrow-left" @click="this.$router.push('/service_admin')">Back</v-btn>
             <v-card class="px-4">
                 <v-card-title class="text-center">Detail Service</v-card-title>
                 <v-card-text>
@@ -39,6 +40,14 @@
                         </v-col>
                         <v-col class="py-0">
                             : {{ serviceData.technician.name }}
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col class="py-0">
+                            Price
+                        </v-col>
+                        <v-col class="py-0">
+                            : {{ formatCurrency(serviceData.price) }}
                         </v-col>
                     </v-row>
                     </div>
@@ -124,6 +133,13 @@ export default {
                 return "grey"
             }
         },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
+        }
     },
     mounted() {
         this.loadService()

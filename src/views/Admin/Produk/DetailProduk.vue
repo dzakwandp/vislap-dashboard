@@ -44,6 +44,7 @@
 import axios from 'axios';
 
 import { useEnvStore } from '@/store/envStore';
+import { useAuthStore } from '@/store/authStore';
 export default {
     data() {
         return {
@@ -62,8 +63,16 @@ export default {
     methods: {
         async getProduct() {
             try {
-                const prod = await axios.get(useEnvStore().apiUrl + 'products/' + this.$route.params.id)
-                const cat = await axios.get(useEnvStore().apiUrl + 'category')
+                const prod = await axios.get(useEnvStore().apiUrl + 'products/' + this.$route.params.id, {
+                    headers: {
+                        Authorization: 'Bearer ' + useAuthStore().accessToken
+                    }
+                })
+                const cat = await axios.get(useEnvStore().apiUrl + 'category', {
+                    headers: {
+                        Authorization: 'Bearer ' + useAuthStore().accessToken
+                    }
+                })
                 console.log(prod)
                 this.catItems = cat.data
                 this.nama = prod.data.nama
@@ -75,8 +84,8 @@ export default {
             }
             catch (err) {
                 console.log(err)
-                if(err.response.status===401){
-                    this.$router.push({name: 'notfound'})
+                if (err.response.status === 401) {
+                    this.$router.push({ name: 'notfound' })
                 }
             }
         },
@@ -109,6 +118,13 @@ export default {
                 .catch((err) => {
                     console.log(err)
                 })
+        },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
         }
     },
     mounted() {

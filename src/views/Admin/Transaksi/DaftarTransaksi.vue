@@ -69,7 +69,7 @@ export default {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
-                maximumSignificantDigits: 3
+                minimumFractionDigits: 0
             }).format(value);
         },
     },

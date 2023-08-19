@@ -49,8 +49,8 @@
                         <tr v-for="item in txsData.items" :key="item.index">
                             <td>{{item.product_name}}</td>
                             <td>{{item.quantity}}</td>
-                            <td>{{item.price}}</td>
-                            <td>{{item.total_price}}</td>
+                            <td>{{formatCurrency(item.price)}}</td>
+                            <td>{{formatCurrency(item.total_price)}}</td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -60,7 +60,23 @@
                             Total Transaksi
                         </v-col>
                         <v-col class="py-0">
-                            : {{ txsData.final_price }}
+                            : {{ formatCurrency(txsData.final_price - txsData.unique_code) }}
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col class="py-0">
+                            Kode Unik
+                        </v-col>
+                        <v-col class="py-0">
+                            : {{ formatCurrency(txsData.unique_code) }}
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col class="py-0">
+                            Total Bayar
+                        </v-col>
+                        <v-col class="py-0">
+                            : {{ formatCurrency(txsData.final_price) }}
                         </v-col>
                     </v-row>
                 </div>
@@ -187,6 +203,13 @@ export default {
                 case 3:
                     return 'Selesaikan Pesanan';
             }
+        },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
         }
     },
     mounted() {

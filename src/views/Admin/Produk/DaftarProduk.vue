@@ -5,6 +5,9 @@
                 <v-btn color="blue-darken-3" prepend-icon="mdi-plus" @click="this.$router.push('/addproduct')">Tambah</v-btn>
             </div>
             <EasyDataTable :headers="dataHeader" :items="product" theme-color="#1565C0" :loading="loading">
+                <template #item-harga="item">
+                    {{formatCurrency(item.harga)}}
+                </template>
                 <template #item-opsi="item" v-slot:item.actions="{item}">
                     <v-btn icon="mdi-eye" color="blue-darken-3" variant="text" @click="toProdDetail(item.id)"></v-btn>
                 </template>
@@ -16,6 +19,7 @@
 import axios from 'axios';
 
 import { useEnvStore } from '@/store/envStore'
+import { useAuthStore } from '@/store/authStore';
 export default {
     components: {
         EasyDataTable: window['vue3-easy-data-table']
@@ -39,7 +43,11 @@ export default {
         },
         async getProduct() {
             try {
-                const prod = await axios.get(useEnvStore().apiUrl + 'products')
+                const prod = await axios.get(useEnvStore().apiUrl + 'products',{
+                    headers:{
+                        Authorization:"Bearer "+useAuthStore().accessToken
+                    }
+                })
                 console.log(prod)
                 this.product = prod.data
                 this.loading = false
@@ -51,6 +59,13 @@ export default {
                     this.$router.push({name: 'notfound'})
                 }
             }
+        },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
         }
     },
     mounted() {

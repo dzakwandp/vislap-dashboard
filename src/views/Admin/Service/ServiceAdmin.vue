@@ -2,6 +2,9 @@
     <div>
         <v-container>
             <EasyDataTable :headers="dataHeader" :items="serviceList">
+            <template #item-price="item">
+                {{formatCurrency(item.price)}}
+            </template>
             <template #item-opsi="item">
                 <v-btn v-if="item.technician_id===null" class="ma-2 text-white" color="orange" prepend-icon="mdi-tools" size="small" @click="dialogSet=true, serviceId=item.id">Assign
                     <v-dialog v-model="dialogSet">
@@ -37,9 +40,10 @@ export default {
             dataHeader: [
                 { text: "id", value: 'id' },
                 { text: "Date", value: 'date' },
-                { text: "Technician", value: 'technician' },
+                { text: "Technician", value: 'technician.name' },
                 { text: "WA User", value: 'wa_user' },
                 { text: "Status", value: 'service_status.status_name' },
+                { text: "Harga", value: 'price' },
                 { text: "", value: 'opsi', sortable: false }
             ]
         }
@@ -97,6 +101,13 @@ export default {
         },
         toServiceDetail(id){
             this.$router.push('/service_detail/'+id)
+        },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
         }
     },
     mounted() {
