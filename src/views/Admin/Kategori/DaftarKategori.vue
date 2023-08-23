@@ -56,6 +56,7 @@
 import axios from 'axios';
 
 import { useEnvStore } from '@/store/envStore'
+import { useAuthStore } from '@/store/authStore';
 export default {
     components: {
         EasyDataTable: window['vue3-easy-data-table']
@@ -81,7 +82,11 @@ export default {
     methods: {
         async getCat() {
             try {
-                const cat = await axios.get(useEnvStore().apiUrl + 'category')
+                const cat = await axios.get(useEnvStore().apiUrl + 'category',{
+                    headers:{
+                        Authorization: 'Bearer '+useAuthStore().accessToken
+                    }
+                })
                 this.category = cat.data
                 this.loading = false
             }
@@ -96,6 +101,10 @@ export default {
             try {
                 const cat = await axios.post(useEnvStore().apiUrl + 'category', {
                     name: this.categoryName
+                },{
+                    headers:{
+                        Authorization: 'Bearer '+useAuthStore().accessToken
+                    }
                 })
                 this.dialogadd = false
                 this.getCat()
@@ -111,7 +120,11 @@ export default {
         updateCat() {
             axios.put(useEnvStore().apiUrl + 'category/' + this.categoryId, {
                 name: this.categoryNameById
-            })
+            },{
+                    headers:{
+                        Authorization: 'Bearer '+useAuthStore().accessToken
+                    }
+                })
                 .then((res) => {
                     this.loadingBtn = false
                     this.dialogEdit = false
@@ -123,7 +136,11 @@ export default {
                 })
         },
         deleteCat() {
-            axios.delete(useEnvStore().apiUrl + 'category/' + this.categoryId)
+            axios.delete(useEnvStore().apiUrl + 'category/' + this.categoryId,{
+                    headers:{
+                        Authorization: 'Bearer '+useAuthStore().accessToken
+                    }
+                })
                 .then((res) => {
                     this.loadingBtn = false
                     this.dialogDelete = false

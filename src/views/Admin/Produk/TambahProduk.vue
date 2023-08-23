@@ -20,6 +20,7 @@
   </template>
 <script>
 import { useEnvStore } from '@/store/envStore';
+import { useAuthStore } from '@/store/authStore';
 
 import axios from "axios"
 export default {
@@ -37,7 +38,11 @@ export default {
   methods: {
     async getCategory() {
       try {
-        const cat = await axios.get(useEnvStore().apiUrl + 'category')
+        const cat = await axios.get(useEnvStore().apiUrl + 'category',{
+          headers:{
+            Authorization:'Bearer '+useAuthStore().accessToken
+          }
+        })
         this.catItems = cat.data
         console.log(this.catItems)
       }
@@ -58,7 +63,11 @@ export default {
       newData.append('stock', this.stock)
       newData.append('_method', "POST")
       axios
-        .post(useEnvStore().apiUrl + "products/", newData)
+        .post(useEnvStore().apiUrl + "products/", newData,{
+          headers:{
+            Authorization:'Bearer '+useAuthStore().accessToken
+          }
+        })
         .then((res) => {
           console.log(res)
           this.$router.push('/products')

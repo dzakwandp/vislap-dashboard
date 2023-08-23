@@ -3,15 +3,25 @@
         <v-container>
             <EasyDataTable :items="serviceList" :headers="dataHeader">
                 <template #item-opsi="item">
-                    <v-btn v-if="item.status_id===1" class="ma-2" color="blue-darken-3" size="small" prepend-icon="mdi-check" @click="dialogProc=true, serviceId=item.id">Accept
+                    <!-- popup untuk melakukan accept service -->
+                    <v-btn v-if="item.status_id===1" class="ma-2" color="blue-darken-3" size="small" prepend-icon="mdi-check" @click="dialogProc=true, serviceId=item.id, loadServiceById()">Accept
                         <v-dialog v-model="dialogProc">
                             <v-card class="w-50 mx-auto">
+                                <v-card-title class="text-blue-darken-3">
+                                    Informasi Service
+                                    <v-card class="mb-4">
+                                    <v-card-title>
+                                        Message from User
+                                    </v-card-title>
+                                    <v-card-text>
+                                        {{serviceDataById.message1}}
+                                    </v-card-text>
+                                </v-card>
+                                </v-card-title>
                                 <v-card-title class="text-blue-darken-3">
                                     Konfirmasi Service
                                 </v-card-title>
                                 <v-textarea class="mx-4" v-model="message2" auto-grow label="Message (optional)" variant="outlined">
-                                </v-textarea>
-                                <v-textarea class="mx-4" v-model="message3" auto-grow label="Message (optional)" variant="outlined">
                                 </v-textarea>
                                 <v-card-actions>
                                     <v-btn class="mx-auto text-body-2" variant="outlined" color="blue-darken-3" @click="acceptService()">Accept</v-btn>
@@ -19,8 +29,48 @@
                             </v-card>
                         </v-dialog>
                     </v-btn>
-                    <v-btn v-if="item.status_id===2" class="ma-2" size="small" color="green-darken-3" prepend-icon="mdi-check" :loading="loadingFinish" 
-                    @click="loadingFinish=true, message2=item.message2, message3=item.message3, finishService(item.id)">Finish</v-btn>
+                    <!-- popup untuk menyelesaikan service -->
+                    <v-btn v-if="item.status_id===2" class="ma-2" size="small" color="green-darken-3" prepend-icon="mdi-check" 
+                    @click="dialogFin=true, serviceId=item.id, loadServiceById()">Finish
+                    <v-dialog v-model="dialogFin">
+                            <v-card class="w-50 mx-auto">
+                                <v-card-title class="text-blue-darken-3">
+                                    Informasi Service
+                                    <v-card class="mb-4">
+                                        <v-card-title>
+                                            Message from User
+                                        </v-card-title>
+                                        <v-card-text>
+                                            {{serviceDataById.message1}}
+                                        </v-card-text>
+                                    </v-card>
+                                    <v-card class="mb-4">
+                                        <v-card-title>
+                                            First Technician Diagnosis
+                                        </v-card-title>
+                                        <v-card-text>
+                                            {{serviceDataById.message2}}
+                                        </v-card-text>
+                                    </v-card>
+                                </v-card-title>
+                                <v-card-title class="text-blue-darken-3">
+                                    Selesaikan Service
+                                </v-card-title>
+                                <v-textarea class="mx-4" v-model="message3" auto-grow label="Message (optional)" variant="outlined">
+                                </v-textarea>
+                                <v-text-field
+                                    class="mx-4"
+                                    v-model.number="price"
+                                    label="Harga"
+                                    variant="outlined"
+                                ></v-text-field>
+                                <v-card-actions>
+                                    <v-btn class="mx-auto text-body-2" variant="outlined" color="blue-darken-3" @click="finishService()">Accept</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>    
+                </v-btn>
+                <v-btn class="ma-2" size="small" color="blue-darken-3" prepend-icon="mdi-eye" @click="this.$router.push('/service_detail/'+item.id)">Details</v-btn>
                 </template>
             </EasyDataTable>
         </v-container>
@@ -37,13 +87,15 @@ export default {
     },
     data() {
         return {
-            message2:"",
-            message3:"",
+            message2: "",
+            message3: "",
+            price: null,
             serviceId: null,
             dialogProc: false,
+            dialogFin: false,
             loadingFinish: false,
-            selectedId: null,
             serviceList: [],
+            serviceDataById:[],
             dataHeader: [
                 { text: "id", value: 'id' },
                 { text: "Date", value: 'date' },
@@ -67,6 +119,24 @@ export default {
             }
             catch (err) {
                 console.log(err)
+                if (err.response.status === 401) {
+                    this.$router.push({ name: 'notfound' })
+                }
+            }
+        },
+        async loadServiceById() {
+            try {
+                const service = await axios.get(useEnvStore().apiUrl + 'services/' + this.serviceId, {
+                    headers: {
+                        Authorization: 'Bearer ' + useAuthStore().accessToken
+                    }
+                })
+                console.log(service)
+                this.serviceDataById = service.data
+                this.loading = false
+            }
+            catch (err) {
+                console.log(err)
                 if(err.response.status===401){
                     this.$router.push({name: 'notfound'})
                 }
@@ -76,7 +146,7 @@ export default {
             try {
                 const accept = await axios.put(useEnvStore().apiUrl + 'services/technician/' + this.serviceId, {
                     message2: this.message2,
-                    message3: this.message3,
+                    message3: "",
                     status_id: 2
                 },
                     {
@@ -84,19 +154,20 @@ export default {
                             Authorization: 'Bearer ' + useAuthStore().accessToken
                         }
                     })
-                    console.log(accept)
-                    this.dialogProc=false
-                    this.getServiceList()
+                console.log(accept)
+                this.dialogProc = false
+                this.getServiceList()
             }
             catch (err) {
                 console.log(err)
             }
         },
-        async finishService(id){
-            try{
-                const finish = await axios.put(useEnvStore().apiUrl + 'services/technician/' + id, {
-                    message2: this.message2,
+        async finishService() {
+            try {
+                const finish = await axios.put(useEnvStore().apiUrl + 'services/technician/' + this.serviceId, {
+                    message2: this.serviceDataById.message2,
                     message3: this.message3,
+                    price: this.price,
                     status_id: 3
                 },
                     {
@@ -104,10 +175,10 @@ export default {
                             Authorization: 'Bearer ' + useAuthStore().accessToken
                         }
                     })
-                    console.log(finish)
-                    this.getServiceList()
+                console.log(finish)
+                this.getServiceList()
             }
-            catch(err){
+            catch (err) {
                 console.log(err)
             }
         }

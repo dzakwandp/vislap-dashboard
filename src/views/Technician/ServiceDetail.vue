@@ -5,7 +5,8 @@
     </div>
     <div v-else>
         <v-container class="w-75">
-            <v-btn color="blue-darken-3" variant="text" prepend-icon="mdi-arrow-left" @click="this.$router.push('/service_admin')">Back</v-btn>
+            <v-btn v-if="role===2" color="blue-darken-3" variant="text" prepend-icon="mdi-arrow-left" @click="this.$router.push('/service_admin')">Back</v-btn>
+            <v-btn v-if="role===3" color="blue-darken-3" variant="text" prepend-icon="mdi-arrow-left" @click="this.$router.push('/service_tech')">Back</v-btn>
             <v-card class="px-4">
                 <v-card-title class="text-center">Detail Service</v-card-title>
                 <v-card-text>
@@ -96,6 +97,7 @@ import { useAuthStore } from '@/store/authStore'
 export default {
     data() {
         return {
+            role: useAuthStore().getRole,
             loading: true,
             loadingButton: false,
             serviceData: [],
