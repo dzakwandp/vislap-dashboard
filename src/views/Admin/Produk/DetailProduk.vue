@@ -99,7 +99,11 @@ export default {
             upData.append('stock', this.stock)
             upData.append('_method', "PUT")
             axios
-                .put(useEnvStore().apiUrl + "products/" + this.$route.params.id, upData)
+                .put(useEnvStore().apiUrl + "products/" + this.$route.params.id, upData,{
+                    headers:{
+                        Authorization:"Bearer "+useAuthStore().accessToken
+                    }
+                })
                 .then((res) => {
                     console.log(res)
                     this.editable = false
@@ -110,7 +114,11 @@ export default {
                 })
         },
         deleteProduct() {
-            axios.delete(useEnvStore().apiUrl + "products/" + this.$route.params.id)
+            axios.delete(useEnvStore().apiUrl + "products/" + this.$route.params.id,{
+                    headers:{
+                        Authorization:"Bearer "+useAuthStore().accessToken
+                    }
+                })
                 .then((res) => {
                     console.log(res)
                     this.$router.push('/products')
