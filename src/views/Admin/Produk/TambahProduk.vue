@@ -151,7 +151,7 @@ export default {
             icon: "success",
             iconColor: "#FAFAFA",
             color: "#FAFAFA",
-            background: "#E57373",
+            background: "#1565C0",
           });
         });
     },
