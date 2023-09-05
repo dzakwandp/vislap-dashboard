@@ -63,18 +63,18 @@
           </v-card-text>
         </v-card>
         <v-card class="mb-4">
-          <v-card-title> Message from Technician </v-card-title>
+          <v-card-title> First Technician Diagnosis </v-card-title>
           <v-card-text>
             {{ serviceData.message2 }}
           </v-card-text>
         </v-card>
         <v-card class="mb-4">
-          <v-card-title> Message from Technician </v-card-title>
+          <v-card-title> Final Technician Diagnosis </v-card-title>
           <v-card-text>
             {{ serviceData.message3 }}
           </v-card-text>
         </v-card>
-        <v-card-title class="text-center">Status Transaksi</v-card-title>
+        <v-card-title class="text-center">Status Service</v-card-title>
         <v-card-text>
           <v-timeline class="mb-4" direction="horizontal">
             <v-timeline-item
