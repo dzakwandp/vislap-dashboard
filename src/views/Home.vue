@@ -71,7 +71,12 @@
             >Manage</v-btn
           ></v-card-title
         >
-        <v-table class="text-body-2">
+        <v-progress-linear
+          v-if="techLoad"
+          :indeterminate="true"
+          color="green-darken-4"
+        ></v-progress-linear>
+        <v-table v-else class="text-body-2">
           <thead>
             <tr>
               <th>User</th>
@@ -106,6 +111,7 @@ export default {
       serviceTech: [],
       transLoad: true,
       serviceLoad: true,
+      techLoad: true,
     };
   },
   methods: {
@@ -150,6 +156,7 @@ export default {
         );
         console.log(serv);
         this.serviceTech = serv.data;
+        this.techLoad = false;
       } catch (err) {
         console.log(err);
       }
