@@ -117,43 +117,55 @@ export default {
       }
     },
     uploadFile() {
-      this.photo = this.photo[0];
-      let newData = new FormData();
-      newData.append("nama", this.nama);
-      newData.append("harga", this.harga);
-      newData.append("img", this.photo);
-      newData.append("kategori", this.kategori);
-      newData.append("stock", this.stock);
-      newData.append("_method", "POST");
-      axios
-        .post(useEnvStore().apiUrl + "products/", newData, {
-          headers: {
-            Authorization: "Bearer " + useAuthStore().accessToken,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          this.loadingbut = false;
-          this.Toast.fire({
-            text: "Berhasil dibuat",
-            icon: "success",
-            iconColor: "#FAFAFA",
-            color: "#FAFAFA",
-            background: "#1976D2",
-          }).then((res) => {
-            res(this.$router.push("/products"));
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          this.Toast.fire({
-            text: "Berhasil dibuat",
-            icon: "success",
-            iconColor: "#FAFAFA",
-            color: "#FAFAFA",
-            background: "#1565C0",
-          });
+      if (this.nama === null && this.photo === null && this.kategori === null) {
+        this.Toast.fire({
+          text: "Item gagal ditambahkan",
+          icon: "error",
+          iconColor: "#FAFAFA",
+          color: "#FAFAFA",
+          background: "#C62828",
         });
+        this.loadingbut = false;
+      } else {
+        this.photo = this.photo[0];
+        let newData = new FormData();
+        newData.append("nama", this.nama);
+        newData.append("harga", this.harga);
+        newData.append("img", this.photo);
+        newData.append("kategori", this.kategori);
+        newData.append("stock", this.stock);
+        newData.append("_method", "POST");
+        axios
+          .post(useEnvStore().apiUrl + "products/", newData, {
+            headers: {
+              Authorization: "Bearer " + useAuthStore().accessToken,
+            },
+          })
+          .then((res) => {
+            console.log(res);
+            this.loadingbut = false;
+            this.Toast.fire({
+              text: "Berhasil dibuat",
+              icon: "success",
+              iconColor: "#FAFAFA",
+              color: "#FAFAFA",
+              background: "#1976D2",
+            }).then((res) => {
+              this.$router.push("/products");
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            this.Toast.fire({
+              text: "Item gagal ditambahkan",
+              icon: "error",
+              iconColor: "#FAFAFA",
+              color: "#FAFAFA",
+              background: "#C62828",
+            });
+            this.loadingbut = false;
+          });
+      }
     },
   },
   mounted() {
