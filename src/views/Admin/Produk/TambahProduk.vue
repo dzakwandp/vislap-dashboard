@@ -117,7 +117,7 @@ export default {
       }
     },
     uploadFile() {
-      if (this.nama === null && this.photo === null && this.kategori === null) {
+      if (this.nama === null || this.photo === null || this.kategori === null) {
         this.Toast.fire({
           text: "Item gagal ditambahkan",
           icon: "error",
