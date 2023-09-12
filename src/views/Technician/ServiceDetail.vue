@@ -87,6 +87,18 @@
             </v-timeline-item>
           </v-timeline>
         </v-card-text>
+        <v-card-actions>
+          <v-btn
+            v-if="role === 2 && serviceData.status_id === 3"
+            class="mx-auto"
+            size="large"
+            variant="tonal"
+            color="blue-darken-3"
+            :loading="loadingButton"
+            @click="(loadingButton = true), toPayment()"
+            >Bayar</v-btn
+          >
+        </v-card-actions>
       </v-card>
     </v-container>
   </div>
@@ -133,6 +145,58 @@ export default {
         }
       }
     },
+    async toPayment() {
+      try {
+        const payment = await axios.post(
+          useEnvStore().apiUrl + "payment/process-payment/services",
+          this.serviceData,
+          {
+            headers: {
+              Authorization: "Bearer " + useAuthStore().accessToken,
+            },
+          }
+        );
+        window.snap.pay(payment.data.token, {
+          onSuccess: (res) => {
+            console.log(res)
+            this.loadingButton = false;
+            this.Toast.fire({
+              text: "Pembayaran berhasil",
+              icon: "success",
+              iconColor: "#FAFAFA",
+              color: "#FAFAFA",
+              background: "#1565C0",
+            });
+            this.loadingButton = false;
+            this.loadService();
+          },
+          onError: () => {
+            this.loadingButton = false;
+            this.Toast.fire({
+              text: "Pembayaran gagal",
+              icon: "error",
+              iconColor: "#FAFAFA",
+              color: "#FAFAFA",
+              background: "#E57373",
+            });
+            this.loadService();
+          },
+          onClose: () => {
+            this.loadingButton = false;
+            this.Toast.fire({
+              text: "Pembayaran dibatalkan",
+              icon: "error",
+              iconColor: "#FAFAFA",
+              color: "#FAFAFA",
+              background: "#E57373",
+            });
+            this.loadingButton = false;
+          },
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
     getStatusColor(listId) {
       if (listId === this.serviceData.status_id) {
         if (this.serviceData.status_id === 5) {
@@ -156,6 +220,16 @@ export default {
     },
   },
   mounted() {
+    let snapMidtrans = document.createElement("script");
+    snapMidtrans.setAttribute(
+      "src",
+      "https://app.sandbox.midtrans.com/snap/snap.js"
+    );
+    snapMidtrans.setAttribute(
+      "data-client-key",
+      "SB-Mid-client-lxNB99oD9QYJQZ5U"
+    );
+    document.head.appendChild(snapMidtrans);
     this.loadService();
   },
 };
