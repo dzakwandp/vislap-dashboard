@@ -1,10 +1,20 @@
 <template lang="">
   <div>
     <v-container>
+      <v-text-field
+      class="w-25 ml-auto"
+        v-model="search"
+        variant="outlined"
+        density="compact"
+        label="Search"
+        placeholder="Search by service id"
+      ></v-text-field>
       <EasyDataTable
         :headers="dataHeader"
-        :items="serviceList"
+        :items="reversedServ"
         :loading="loading"
+        :search-field="field"
+        :search-value="search"
         theme-color="#1565C0"
       >
         <template #item-price="item">
@@ -68,6 +78,8 @@ export default {
     return {
       loading: true,
       loadingButton: false,
+      search: "",
+      field: "id",
       dialogSet: false,
       serviceId: null,
       selectedTech: null,
@@ -83,6 +95,11 @@ export default {
         { text: "", value: "opsi", sortable: false },
       ],
     };
+  },
+  computed: {
+    reversedServ(){
+      return this.serviceList.slice().reverse()
+    }
   },
   methods: {
     async getService() {
