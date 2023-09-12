@@ -104,9 +104,11 @@ export default {
       loadingButton: false,
       serviceData: [],
       servStatus: [
+        { id: 5, status: "Dibatalkan" },
         { id: 1, status: "Pending" },
         { id: 2, status: "Diproses" },
-        { id: 3, status: "Selesai" },
+        { id: 3, status: "Menunggu Diambil" },
+        { id: 4, status: "Selesai" },
       ],
     };
   },
@@ -132,8 +134,15 @@ export default {
       }
     },
     getStatusColor(listId) {
-      if (listId === this.serviceData.service_status.id) {
-        return "green";
+      if (listId === this.serviceData.status_id) {
+        if (this.serviceData.status_id === 5) {
+          return "red";
+        }
+        if (this.serviceData.status_id === 4) {
+          return "blue";
+        } else {
+          return "green";
+        }
       } else {
         return "grey";
       }

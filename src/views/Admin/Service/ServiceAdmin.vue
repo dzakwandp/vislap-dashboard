@@ -2,10 +2,11 @@
   <div>
     <v-container>
       <v-text-field
-      class="w-25 ml-auto"
+        class="w-25 ml-auto"
         v-model="search"
         variant="outlined"
         density="compact"
+        prepend-inner-icon="mdi-magnify"
         label="Search"
         placeholder="Search by service id"
       ></v-text-field>
@@ -21,6 +22,7 @@
           {{ formatCurrency(item.price) }}
         </template>
         <template #item-opsi="item">
+          <!-- asign service to technician -->
           <v-btn
             v-if="item.technician_id === null"
             class="ma-2 text-white"
@@ -48,6 +50,45 @@
                   :loading="loadingButton"
                   @click="(loadingButton = true), setTech()"
                   >Assign</v-btn
+                >
+              </v-card>
+            </v-dialog>
+          </v-btn>
+          <!-- cancel service -->
+          <v-btn
+            v-if="item.status_id === 2"
+            class="ma-2 text-white"
+            color="red"
+            prepend-icon="mdi-close"
+            size="small"
+            @click="
+              (dialogCancel = true),
+                (serviceId = item.id),
+                (technicianIdForCancel = item.technician_id)
+            "
+            >Cancel
+            <v-dialog v-model="dialogCancel">
+              <v-card class="mx-auto w-25 pa-4">
+                <v-card-title class="text-blue-darken-3">
+                  Batalkan Service
+                </v-card-title>
+                <v-textarea
+                  class="mx-4"
+                  v-model="message"
+                  auto-grow
+                  label="Message (optional)"
+                  placeholder="Tuliskan keterangan"
+                  variant="outlined"
+                >
+                </v-textarea>
+                <v-btn
+                  class="ma-2 text-white"
+                  color="red"
+                  prepend-icon="mdi-tools"
+                  size="small"
+                  :loading="loadingButton"
+                  @click="(loadingButton = true), cancelServ()"
+                  >Cancel</v-btn
                 >
               </v-card>
             </v-dialog>
@@ -81,8 +122,11 @@ export default {
       search: "",
       field: "id",
       dialogSet: false,
+      dialogCancel: false,
       serviceId: null,
+      technicianIdForCancel: null,
       selectedTech: null,
+      message: null,
       tech: [],
       serviceList: [],
       dataHeader: [
@@ -97,9 +141,9 @@ export default {
     };
   },
   computed: {
-    reversedServ(){
-      return this.serviceList.slice().reverse()
-    }
+    reversedServ() {
+      return this.serviceList.slice().reverse();
+    },
   },
   methods: {
     async getService() {
@@ -167,6 +211,44 @@ export default {
         });
         this.loadingButton = false;
         this.dialogSet = false;
+        this.getService();
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async cancelServ() {
+      try {
+        const cancel = await axios.put(
+          useEnvStore().apiUrl + "services/" + this.serviceId,
+          {
+            technician_id: parseInt(this.technicianIdForCancel),
+            status_id: 5,
+            message3: this.message,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + useAuthStore().accessToken,
+            },
+          }
+        );
+        this.$swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          text: "Service dibatalkan",
+          icon: "warning",
+          iconColor: "#FAFAFA",
+          color: "#FAFAFA",
+          background: "#E57373",
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", this.$swal.stopTimer);
+            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+          },
+        });
+        this.loadingButton = false;
+        this.dialogCancel = false;
         this.getService();
       } catch (err) {
         console.log(err);
