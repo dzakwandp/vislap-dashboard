@@ -76,7 +76,7 @@
             <v-row>
               <v-col cols="2" class="pa-0"> Alamat </v-col>
               <v-col cols="auto" class="pa-0 mr-1"> : </v-col>
-              <v-col class="pa-0">{{ txsData.user.alamat }}, {{txsData.user.kecamatan}}, {{txsData.user.kota}}, {{txsData.user.provinsi}} </v-col>
+              <v-col class="pa-0">{{ txsData.alamat }} </v-col>
             </v-row>
             <v-row>
               <v-col cols="2" class="pa-0 mr-2"></v-col>
